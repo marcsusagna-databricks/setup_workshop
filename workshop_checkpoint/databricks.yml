@@ -1,8 +1,8 @@
-# This is a Declarative Automation Bundle definition for workshop.
+# This is a Declarative Automation Bundle definition for workshop_checkpoint.
 # See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
 bundle:
-  name: workshop
-  uuid: d2c62055-6943-4967-a521-99542d21d99e
+  name: workshop_checkpoint
+  uuid: 69c1de0a-edeb-4864-979a-daf6ea91ead8
 
 include:
   - resources/*.yml

@@ -1,0 +1,7 @@
+- Clone repo locally, create your own branch
+- databricks auth login
+- databricks bundle init
+- databricks bundle deploy -t dev -p workshop_dev 
+- Push branch to remote, pull branch into Databricks
+- Modify in the UI: 
+    - Create schemas

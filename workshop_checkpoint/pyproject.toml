@@ -1,5 +1,5 @@
 [project]
-name = "workshop"
+name = "workshop_checkpoint"
 version = "0.0.1"
 authors = [{ name = "marc.susagna@databricks.com" }]
 requires-python = ">=3.10,<3.13"
@@ -21,7 +21,7 @@ dev = [
 ]
 
 [project.scripts]
-main = "workshop.main:main"
+main = "workshop_checkpoint.main:main"
 
 [build-system]
 requires = ["hatchling"]
