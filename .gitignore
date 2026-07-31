@@ -1,3 +1,12 @@
+.DS_Store
+.claude
+.agents
+.ai-dev-kit
+.mcp.json
+.isaac
+.vscode
+.databricks
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
