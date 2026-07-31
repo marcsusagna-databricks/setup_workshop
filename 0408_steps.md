@@ -2,6 +2,9 @@
 - databricks auth login
 - databricks bundle init
 - databricks bundle deploy -t dev -p workshop_dev 
+- Modify sample_notebook from VS Code
+- databricks bundle deploy -t dev -p workshop_dev 
 - Push branch to remote, pull branch into Databricks
 - Modify in the UI: 
-    - Create schemas
+    - Create schemas with 00_ddl_statments
+    - Create bronze layer with autoloader

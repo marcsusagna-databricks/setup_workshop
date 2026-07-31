@@ -20,6 +20,11 @@ resources:
             - task_key: ddl_statements
           notebook_task:
             notebook_path: ../src/01_bronze.ipynb
+        - task_key: silver_ingestion
+          depends_on:
+            - task_key: bronze_ingestion
+          notebook_task:
+            notebook_path: ../src/02_silver.ipynb
 
       environments:
         - environment_key: default
