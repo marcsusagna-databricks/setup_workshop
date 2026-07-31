@@ -1,0 +1,29 @@
+resources:
+  jobs:
+    ingest_crm:
+      name: ingest_crm
+      queue:
+        enabled: true
+
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+        - name: schema_prefix
+          default: ${var.schema}
+
+      tasks:
+        - task_key: ddl_statements
+          notebook_task:
+            notebook_path: ../src/00_ddl_statement.ipynb
+        - task_key: bronze_ingestion
+          depends_on:
+            - task_key: ddl_statements
+          notebook_task:
+            notebook_path: ../src/01_bronze.ipynb
+
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "4"
+            dependencies:
+              - ../dist/*.whl
