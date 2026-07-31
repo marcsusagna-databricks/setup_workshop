@@ -35,12 +35,12 @@ targets:
   prod:
     mode: production
     workspace:
-      host: https://adb-7405613972875759.19.azuredatabricks.net
+      host: https://adb-7405617196693493.13.azuredatabricks.net/
       # We explicitly deploy to /Workspace/Users/marc.susagna@databricks.com to make sure we only have a single copy.
       root_path: /Workspace/Users/marc.susagna@databricks.com/.bundle/${bundle.name}/${bundle.target}
     variables:
-      catalog: tabfm_and_tsfm
-      schema: prod
+      catalog: marc_susagna_az
+      schema: prod_${workspace.current_user.short_name}
     permissions:
       - user_name: marc.susagna@databricks.com
         level: CAN_MANAGE
