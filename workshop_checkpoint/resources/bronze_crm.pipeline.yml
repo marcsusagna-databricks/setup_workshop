@@ -1,0 +1,44 @@
+# Example: Lakeflow Connect managed ingestion pipeline for CRM data (Dynamics 365)
+# Uncomment the block below to deploy this pipeline.
+#
+# resources:
+#   pipelines:
+#     bronze_crm:
+#       name: 'Bronze CRM Ingestion'
+#       catalog: ${var.catalog}
+#       target: ${var.schema}_bronze
+#       serverless: true
+#       channel: PREVIEW
+#
+#       ingestion_definition:
+#         connection_name: "dyn_365"
+#         objects:
+#           - schema:
+#               source_schema: "dbo"
+#               destination_catalog: ${var.catalog}
+#               destination_schema: ${var.schema}_bronze
+#           # Or ingest specific tables:
+#           # - table:
+#           #     source_schema: "dbo"
+#           #     source_table: "accounts"
+#           #     destination_catalog: ${var.catalog}
+#           #     destination_schema: ${var.schema}_bronze
+#           # - table:
+#           #     source_schema: "dbo"
+#           #     source_table: "contacts"
+#           #     destination_catalog: ${var.catalog}
+#           #     destination_schema: ${var.schema}_bronze
+#           # - table:
+#           #     source_schema: "dbo"
+#           #     source_table: "leads"
+#           #     destination_catalog: ${var.catalog}
+#           #     destination_schema: ${var.schema}_bronze
+#
+#       # Optional: SCD Type and table configuration defaults
+#       # ingestion_definition:
+#       #   table_configuration:
+#       #     scd_type: 'SCD_TYPE_1'
+#
+#       permissions:
+#         - level: CAN_VIEW
+#           group_name: 'users'
