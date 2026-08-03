@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "databricks-genie-crm": {
+      "type": "http",
+      "url": "https_url/api/2.0/mcp/genie/01f18f13a28a1b02ba77da0d4ba63cd4",
+      "headers": {
+        "Authorization": "Bearer ${DATABRICKS_TOKEN}"
+      }
+    },
+    "databricks-sql": {
+      "type": "http",
+      "url": "https_url/api/2.0/mcp/sql",
+      "headers": {
+        "Authorization": "Bearer ${DATABRICKS_TOKEN}"
+      }
+    }
+  }
+}
