@@ -1,0 +1,8 @@
+resources:
+  genie_spaces:
+    crm_genie_space:
+      title: "CRM Lead and Opportunity Insights"
+      warehouse_id: ${var.warehouse_id}
+      file_path: ../src/genie_spaces/crm_genie_space.geniespace.json
+      description: Analyzes leads at different stage of the sales funnel
+      parent_path: /Workspace/Users/marc.susagna@databricks.com/genie_agents

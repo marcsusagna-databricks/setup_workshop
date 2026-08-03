@@ -1,0 +1,9 @@
+resources:
+  dashboards:
+    crm_silver_dashboard:
+      display_name: CRM Silver Pipeline
+      file_path: ../src/dashboards/crm_silver.lvdash.json
+      warehouse_id: ${var.warehouse_id}
+      # crm_silver lives in the '<schema>_silver' schema created by the ingest_crm job.
+      dataset_catalog: ${var.catalog}
+      dataset_schema: ${var.schema}_silver

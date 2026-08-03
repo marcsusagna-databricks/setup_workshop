@@ -1,0 +1,403 @@
+{
+  "datasets": [
+    {
+      "name": "ds_crm",
+      "displayName": "CRM Silver leads",
+      "queryLines": [
+        "SELECT lead_id, company, contact_name, stage,\n",
+        "       CAST(opportunity_value AS DOUBLE) AS opportunity_value,\n",
+        "       CAST(created_date AS DATE) AS created_date,\n",
+        "       source_file, ingestion_timestamp\n",
+        "FROM crm_silver"
+      ],
+      "columns": [
+        {
+          "displayName": "Total Pipeline",
+          "description": "Sum of opportunity value across all leads",
+          "expression": "SUM(`opportunity_value`)"
+        },
+        {
+          "displayName": "Lead Count",
+          "description": "Number of leads",
+          "expression": "COUNT(`lead_id`)"
+        },
+        {
+          "displayName": "Avg Deal Size",
+          "description": "Mean opportunity value per lead",
+          "expression": "AVG(`opportunity_value`)"
+        },
+        {
+          "displayName": "Won Pipeline",
+          "description": "Opportunity value of leads in Closed Won stage",
+          "expression": "SUM(CASE WHEN `stage`='Closed Won' THEN `opportunity_value` ELSE 0 END)"
+        }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "overview",
+      "displayName": "Overview",
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1",
+      "layout": [
+        {
+          "widget": {
+            "name": "header",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# CRM Pipeline — Silver Layer\n",
+                "Leads and opportunities from the `crm_silver` table: total pipeline, deal sizing, stage distribution, and monthly intake. Use the Filters page to slice by stage or created date."
+              ]
+            }
+          },
+          "position": {"x": 0, "y": 0, "width": 12, "height": 2}
+        },
+        {
+          "widget": {
+            "name": "kpi-total-pipeline",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_crm",
+                  "fields": [
+                    {"name": "measure(Total Pipeline)", "expression": "MEASURE(`Total Pipeline`)"}
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "frame": {"title": "Total Pipeline", "showTitle": true},
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(Total Pipeline)",
+                  "displayName": "Total Pipeline",
+                  "format": {"type": "number-currency", "currencyCode": "USD", "abbreviation": "compact"}
+                }
+              }
+            }
+          },
+          "position": {"x": 0, "y": 2, "width": 3, "height": 3}
+        },
+        {
+          "widget": {
+            "name": "kpi-lead-count",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_crm",
+                  "fields": [
+                    {"name": "measure(Lead Count)", "expression": "MEASURE(`Lead Count`)"}
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "frame": {"title": "Leads", "showTitle": true},
+              "encodings": {
+                "value": {"fieldName": "measure(Lead Count)", "displayName": "Leads"}
+              }
+            }
+          },
+          "position": {"x": 3, "y": 2, "width": 3, "height": 3}
+        },
+        {
+          "widget": {
+            "name": "kpi-avg-deal",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_crm",
+                  "fields": [
+                    {"name": "measure(Avg Deal Size)", "expression": "MEASURE(`Avg Deal Size`)"}
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "frame": {"title": "Avg Deal Size", "showTitle": true},
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(Avg Deal Size)",
+                  "displayName": "Avg Deal Size",
+                  "format": {"type": "number-currency", "currencyCode": "USD", "abbreviation": "compact"}
+                }
+              }
+            }
+          },
+          "position": {"x": 6, "y": 2, "width": 3, "height": 3}
+        },
+        {
+          "widget": {
+            "name": "kpi-won-pipeline",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_crm",
+                  "fields": [
+                    {"name": "measure(Won Pipeline)", "expression": "MEASURE(`Won Pipeline`)"}
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "frame": {"title": "Won Pipeline", "showTitle": true},
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(Won Pipeline)",
+                  "displayName": "Closed Won",
+                  "format": {"type": "number-currency", "currencyCode": "USD", "abbreviation": "compact"}
+                }
+              }
+            }
+          },
+          "position": {"x": 9, "y": 2, "width": 3, "height": 3}
+        },
+        {
+          "widget": {
+            "name": "pipeline-by-stage",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_crm",
+                  "fields": [
+                    {"name": "stage", "expression": "`stage`"},
+                    {"name": "sum(opportunity_value)", "expression": "SUM(`opportunity_value`)"}
+                  ],
+                  "disaggregated": false,
+                  "orders": [
+                    {"direction": "DESC", "expression": "SUM(`opportunity_value`)"}
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "frame": {"title": "Pipeline Value by Stage", "showTitle": true},
+              "encodings": {
+                "x": {"fieldName": "stage", "scale": {"type": "categorical"}, "displayName": "Stage"},
+                "y": {
+                  "fieldName": "sum(opportunity_value)",
+                  "scale": {"type": "quantitative"},
+                  "displayName": "Pipeline Value",
+                  "format": {"type": "number-currency", "currencyCode": "USD", "abbreviation": "compact"}
+                }
+              }
+            }
+          },
+          "position": {"x": 0, "y": 5, "width": 6, "height": 6}
+        },
+        {
+          "widget": {
+            "name": "leads-by-stage",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_crm",
+                  "fields": [
+                    {"name": "stage", "expression": "`stage`"},
+                    {"name": "count(lead_id)", "expression": "COUNT(`lead_id`)"}
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "pie",
+              "frame": {"title": "Leads by Stage", "showTitle": true},
+              "encodings": {
+                "angle": {
+                  "fieldName": "count(lead_id)",
+                  "scale": {"type": "quantitative"},
+                  "displayName": "Leads"
+                },
+                "color": {
+                  "fieldName": "stage",
+                  "scale": {"type": "categorical"},
+                  "displayName": "Stage"
+                },
+                "label": {"show": true}
+              }
+            }
+          },
+          "position": {"x": 6, "y": 5, "width": 6, "height": 6}
+        },
+        {
+          "widget": {
+            "name": "monthly-intake",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_crm",
+                  "fields": [
+                    {"name": "monthly(created_date)", "expression": "DATE_TRUNC(\"MONTH\", `created_date`)"},
+                    {"name": "sum(opportunity_value)", "expression": "SUM(`opportunity_value`)"}
+                  ],
+                  "disaggregated": false,
+                  "orders": [
+                    {"direction": "ASC", "expression": "DATE_TRUNC(\"MONTH\", `created_date`)"}
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "frame": {"title": "Monthly Pipeline Intake", "showTitle": true},
+              "encodings": {
+                "x": {"fieldName": "monthly(created_date)", "scale": {"type": "temporal"}, "displayName": "Month"},
+                "y": {
+                  "fieldName": "sum(opportunity_value)",
+                  "scale": {"type": "quantitative", "domainMin": 0},
+                  "displayName": "Pipeline Value",
+                  "format": {"type": "number-currency", "currencyCode": "USD", "abbreviation": "compact"}
+                }
+              }
+            }
+          },
+          "position": {"x": 0, "y": 11, "width": 12, "height": 6}
+        },
+        {
+          "widget": {
+            "name": "lead-detail",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ds_crm",
+                  "fields": [
+                    {"name": "lead_id", "expression": "`lead_id`"},
+                    {"name": "company", "expression": "`company`"},
+                    {"name": "contact_name", "expression": "`contact_name`"},
+                    {"name": "stage", "expression": "`stage`"},
+                    {"name": "opportunity_value", "expression": "`opportunity_value`"},
+                    {"name": "created_date", "expression": "`created_date`"}
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "frame": {"title": "Lead Detail", "showTitle": true},
+              "encodings": {
+                "columns": [
+                  {"fieldName": "lead_id", "displayName": "Lead"},
+                  {"fieldName": "company", "displayName": "Company"},
+                  {"fieldName": "contact_name", "displayName": "Contact"},
+                  {"fieldName": "stage", "displayName": "Stage"},
+                  {
+                    "fieldName": "opportunity_value",
+                    "displayName": "Opportunity Value",
+                    "format": {"type": "number-currency", "currencyCode": "USD"}
+                  },
+                  {"fieldName": "created_date", "displayName": "Created"}
+                ]
+              }
+            }
+          },
+          "position": {"x": 0, "y": 17, "width": 12, "height": 7}
+        }
+      ]
+    },
+    {
+      "name": "filters",
+      "displayName": "Filters",
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS",
+      "layoutVersion": "GRID_V1",
+      "layout": [
+        {
+          "widget": {
+            "name": "filter-date",
+            "queries": [
+              {
+                "name": "ds_date",
+                "query": {
+                  "datasetName": "ds_crm",
+                  "fields": [
+                    {"name": "created_date", "expression": "`created_date`"}
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-date-range-picker",
+              "encodings": {
+                "fields": [
+                  {"fieldName": "created_date", "queryName": "ds_date"}
+                ]
+              },
+              "frame": {"title": "Created Date", "showTitle": true}
+            }
+          },
+          "position": {"x": 0, "y": 0, "width": 6, "height": 2}
+        },
+        {
+          "widget": {
+            "name": "filter-stage",
+            "queries": [
+              {
+                "name": "ds_stage",
+                "query": {
+                  "datasetName": "ds_crm",
+                  "fields": [
+                    {"name": "stage", "expression": "`stage`"}
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {"fieldName": "stage", "queryName": "ds_stage", "displayName": "Stage"}
+                ]
+              },
+              "frame": {"title": "Stage", "showTitle": true}
+            }
+          },
+          "position": {"x": 6, "y": 0, "width": 6, "height": 2}
+        }
+      ]
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "canvasBackgroundColor": {"light": "#FCFCFC", "dark": "#1F272D"},
+      "widgetBackgroundColor": {"light": "#FFFFFF", "dark": "#11171C"},
+      "widgetBorderColor": {"light": "#FFFFFF", "dark": "#11171C"},
+      "fontColor": {"light": "#11171C", "dark": "#E8ECF0"},
+      "selectionColor": {"light": "#2272B4", "dark": "#8ACAFF"},
+      "visualizationColors": [
+        "#FFA600", "#FF7054", "#DE5582", "#995495", "#4E5185", "#1D425C", "#99DDB4"
+      ],
+      "widgetHeaderAlignment": "LEFT"
+    }
+  }
+}

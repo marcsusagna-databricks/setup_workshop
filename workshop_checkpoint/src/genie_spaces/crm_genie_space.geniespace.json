@@ -1,0 +1,90 @@
+{
+  "config": {
+    "sample_questions": [
+      {
+        "id": "01f18f106a891a9fb52bb6fe7ad8286e",
+        "question": [
+          "How many leads are still open? "
+        ]
+      },
+      {
+        "id": "01f18f1090c911758dfa6a807ac5a968",
+        "question": [
+          "What's the value of the lost leads?"
+        ]
+      }
+    ]
+  },
+  "data_sources": {
+    "tables": [
+      {
+        "column_configs": [
+          {
+            "column_name": "_rescued_data",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "company",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "contact_name",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "created_date",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "ingestion_timestamp",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "lead_id",
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "opportunity_value",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "source_file",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          },
+          {
+            "column_name": "stage",
+            "enable_entity_matching": true,
+            "enable_format_assistance": true
+          }
+        ],
+        "identifier": "tabfm_and_tsfm.marc_susagna_silver.crm_silver"
+      }
+    ]
+  },
+  "instructions": {
+    "example_question_sqls": [
+      {
+        "id": "01f18f1029ab1b50b351097a6d4619fc",
+        "question": [
+          "How many leads and distinct companies are there for each sales stage in the CRM data?"
+        ],
+        "sql": [
+          "SELECT\n",
+          "  stage,\n",
+          "  COUNT(*) AS num_leads,\n",
+          "  COUNT(DISTINCT company) AS num_companies\n",
+          "FROM IDENTIFIER(:catalog || '.' || :schema_prefix || '_silver.crm_silver')\n",
+          "GROUP BY stage\n",
+          "ORDER BY num_leads DESC"
+        ]
+      }
+    ]
+  },
+  "version": 2
+}

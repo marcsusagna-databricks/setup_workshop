@@ -18,6 +18,8 @@ variables:
     description: The catalog to use
   schema:
     description: The schema to use
+  warehouse_id:
+    description: The SQL warehouse backing dashboards
 
 targets:
   dev:
@@ -32,6 +34,7 @@ targets:
     variables:
       catalog: tabfm_and_tsfm
       schema: ${workspace.current_user.short_name}
+      warehouse_id: bf9c4db8960ced01
   prod:
     mode: production
     workspace:
@@ -41,6 +44,7 @@ targets:
     variables:
       catalog: marc_susagna_az
       schema: prod_${workspace.current_user.short_name}
+      warehouse_id: 620f145d153b96d9
     permissions:
       - user_name: marc.susagna@databricks.com
         level: CAN_MANAGE
