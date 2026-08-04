@@ -1,0 +1,22 @@
+resources:
+  jobs:
+    ingestion_crm:
+      name: ingestion_crm
+      queue:
+        enabled: true
+
+      tasks:
+        - task_key: ddl_statements
+          notebook_task:
+            notebook_path: ../src/00_ddl_statements.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema_prefix: ${var.schema}
+        - task_key: bronze_ingestion
+          depends_on:
+            - task_key: ddl_statements
+          notebook_task:
+            notebook_path: ../src/01_bronze.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema_prefix: ${var.schema}
