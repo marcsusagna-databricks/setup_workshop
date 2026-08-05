@@ -5,6 +5,12 @@ resources:
       queue:
         enabled: true
 
+      schedule:
+        # Run every day at 3:00 am. The pause status is set per target in databricks.yml:
+        # unpaused in prod, paused in dev.
+        quartz_cron_expression: "0 0 3 * * ?"
+        timezone_id: Europe/Belgrade
+
       tasks:
         - task_key: ddl_statements
           notebook_task:
@@ -17,6 +23,22 @@ resources:
             - task_key: ddl_statements
           notebook_task:
             notebook_path: ../src/01_bronze.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema_prefix: ${var.schema}
+        - task_key: silver
+          depends_on:
+            - task_key: bronze_ingestion
+          notebook_task:
+            notebook_path: ../src/02_silver.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema_prefix: ${var.schema}
+        - task_key: gold
+          depends_on:
+            - task_key: silver
+          notebook_task:
+            notebook_path: ../src/03_gold.ipynb
             base_parameters:
               catalog: ${var.catalog}
               schema_prefix: ${var.schema}
